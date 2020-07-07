@@ -1,0 +1,106 @@
+#checkBoxes {
+  position: absolute;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(auto-fill, 2vw);
+  grid-template-columns: repeat(auto-fill, 12vw);
+  height: 15vw;
+  top: 1.38875vw;
+  left: 12.49875vw;
+}
+
+#checkBoxes label {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+#checkBoxes input {
+  vertical-align: middle;
+}
+
+#checkBoxes div {
+  display: inline-block;
+  vertical-align: middle;
+  font-family: "Ubuntu";
+  font-size: 1vw;
+}
+
+#correctSquare {
+  position: absolute;
+  left: 41.6625vw;
+  top: 5.555vw;
+  transform: scale(2);
+}
+
+button {
+  width: 5.555vw;
+  height: 5.555vw;
+}
+
+button>* {
+  pointer-events: none;
+}
+
+button * {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+button .AtomicNumber {
+  font-size: 0.85vw;
+  top: 10%;
+  left: 50%;
+}
+
+button .Symbol {
+  font-size: 2vw;
+  top: 40%;
+  left: 50%;
+}
+
+button .Element {
+  font-size: .75vw;
+  top: 70%;
+  left: 50%;
+}
+
+button .AtomicMass {
+  font-size: 0.75vw;
+  top: 90%;
+  left: 50%;
+}
+
+#scoreContainers {
+  display: inline-block;
+  position: absolute;
+  left: 52.7725vw;
+  top: 1.85166vw;
+}
+
+.scoreContainer {
+  position: relative;
+  display: inline-block;
+  border-radius: 0.5vw;
+  width: 5.555vw;
+  height: 5.555vw;
+}
+
+.scoreContainer .score {
+  position: absolute;
+  font-family: "Ubuntu";
+  font-size: 2.7775vw;
+  color: white;
+  display: inline-block;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-shadow: 1px 1px 1px #000000;
+}
+
+#correctScoreContainer {
+  background-color: LightGreen;
+}
+
+#incorrectScoreContainer {
+  background-color: LightCoral;
+}
