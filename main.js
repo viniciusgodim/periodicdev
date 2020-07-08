@@ -52,11 +52,11 @@ function handleClick(event) {
   } else {
     if (options.includes(parseInt(button.getAttribute('AtomicNumber')))) {
       if (button.getAttribute("AtomicNumber") == correctAtomicNumber) {
-        fillSquare(button.id, correctAtomicNumber, true);
-        document.getElementById(button.id).setAttribute('alreadyPlayed', true);
-        correctScore++;
-        handleScores();
-        if (totalOptions.length > 1){
+        if (totalOptions.length > 0) {
+          fillSquare(button.id, correctAtomicNumber, true);
+          document.getElementById(button.id).setAttribute('alreadyPlayed', true);
+          correctScore++;
+          handleScores();
           generateGame();
         }
       } else {
@@ -75,18 +75,20 @@ function generateGame() {
       square.style.backgroundColor = '';
     }
   });
-  options = getRandomArrayElements(totalOptions, numberOfOptions);
-  correctIndex = Math.floor(Math.random() * numberOfOptions);
-  correctAtomicNumber = options[correctIndex]
-  document.getElementById("correctSquare").innerHTML = '';
-  fillSquare("correctSquare", correctAtomicNumber, false);
-  squares.forEach(button => {
-    if (options.includes(parseInt(button.getAttribute('AtomicNumber')))) {
-      button.style.backgroundColor = 'Moccasin';
-    }
-  });
-  squares.forEach(button => button.removeEventListener("click", handleClick));
-  squares.forEach(button => button.addEventListener("click", handleClick));
+  if (totalOptions.length > 0) {
+    options = getRandomArrayElements(totalOptions, numberOfOptions);
+    correctIndex = Math.floor(Math.random() * numberOfOptions);
+    correctAtomicNumber = options[correctIndex]
+    document.getElementById("correctSquare").innerHTML = '';
+    fillSquare("correctSquare", correctAtomicNumber, false);
+    squares.forEach(button => {
+      if (options.includes(parseInt(button.getAttribute('AtomicNumber')))) {
+        button.style.backgroundColor = 'Moccasin';
+      }
+    });
+    squares.forEach(button => button.removeEventListener("click", handleClick));
+    squares.forEach(button => button.addEventListener("click", handleClick));
+  }
 }
 
 var data;
@@ -96,7 +98,7 @@ function unique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-function buildOptions(){
+function buildOptions() {
   totalOptions = [];
   squares.forEach(square => {
     if (!square.getAttribute('alreadyPlayed') && !square.getAttribute('outOfGame')) {
