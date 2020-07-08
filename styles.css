@@ -45,6 +45,7 @@ button {
 
 button>* {
   pointer-events: none;
+  font-family: "Ubuntu"
 }
 
 button * {
