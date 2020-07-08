@@ -26,6 +26,15 @@ function getRandomArrayElements(arr, count) {
   return shuffled.slice(min);
 }
 
+function setBubble(range, bubble) {
+  const val = range.value;
+  const min = range.min ? range.min : 0;
+  const max = range.max ? range.max : 100;
+  const newVal = Number(((val - min) * 100) / (max - min));
+  bubble.innerHTML = val;
+  bubble.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
+}
+
 function fillSquare(Element, AtomicNumber, showNumbers) {
   list = ["Symbol", "Element"];
   if (showNumbers) {
@@ -91,9 +100,6 @@ function generateGame() {
   }
 }
 
-var data;
-var options = [];
-
 function unique(value, index, self) {
   return self.indexOf(value) === index;
 }
@@ -106,13 +112,16 @@ function buildOptions() {
     }
   });
   totalOptions.shift();
-  numberOfOptions = 4;
+  numberOfOptions = numberOfOptionsRange.value;
   if (totalOptions.length < numberOfOptions) {
     numberOfOptions = totalOptions.length;
   }
 }
 
+var data;
+var options = [];
 var numberOfOptions;
+var numberOfOptionsRange;
 
 function main() {
   fetchJSONFile('periodic.json', function(dataArgument) {
@@ -131,6 +140,16 @@ function main() {
       label.appendChild(elementTypeSpan);
       document.getElementById("checkBoxes").appendChild(label);
     }
+    numberOfOptionsRange = document.querySelector("input[type=range]");
+    numberOfOptionsBubble = document.querySelector(".bubble");
+    setBubble(numberOfOptionsRange, numberOfOptionsBubble);
+    numberOfOptionsRange.addEventListener("input", () => {
+      setBubble(numberOfOptionsRange, numberOfOptionsBubble);
+    });
+    numberOfOptionsRange.addEventListener('change', function() {
+      generateGame();
+      numberOfOptionsRange.blur();
+    });
     var checkBoxes = document.querySelectorAll("input[type=checkbox]");
     checkBoxes.forEach(checkBox => {
       checkBox.addEventListener('change', function() {
@@ -154,7 +173,7 @@ function main() {
     });
     for (var entry of data) {
       var square = document.createElement('button');
-      size = 100 / 18
+      size = 5.555
       square.style.position = "absolute";
       if (entry.Group != null) {
         square.style.left = size * (entry.Group - 1) + 'vw';
