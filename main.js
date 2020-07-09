@@ -112,87 +112,103 @@ function buildOptions() {
     }
   });
   totalOptions.shift();
-  numberOfOptions = numberOfOptionsRange.value;
+  numberOfOptions = optionsRange.value;
   if (totalOptions.length < numberOfOptions) {
     numberOfOptions = totalOptions.length;
+  }
+}
+
+function generateCheckboxes(){
+  var elementTypes = data.map(a => a.Type);
+  uniqueElementTypes = elementTypes.filter(unique);
+  for (i = 0; i < uniqueElementTypes.length; i++) {
+    var label = document.createElement("label");
+    var elementTypeSpan = document.createElement("div");
+    var elementTypeText = document.createTextNode(uniqueElementTypes[i]);
+    elementTypeSpan.appendChild(elementTypeText);
+    var elementTypeCheckBox = document.createElement("input");
+    elementTypeCheckBox.setAttribute("type", "checkbox");
+    elementTypeCheckBox.checked = true;
+    label.appendChild(elementTypeCheckBox);
+    label.appendChild(elementTypeSpan);
+    document.getElementById("checkBoxes").appendChild(label);
+  }
+}
+
+function handleOptionsRange(){
+  optionsRange = document.querySelector("input[type=range]");
+  optionsBubble = document.querySelector(".bubble");
+  setBubble(optionsRange, optionsBubble);
+  optionsRange.addEventListener("input", () => {
+    setBubble(optionsRange, optionsBubble);
+  });
+  optionsRange.addEventListener('change', function() {
+    generateGame();
+    optionsRange.blur();
+  });
+}
+
+function handleCheckboxChange(){
+  var checkBoxes = document.querySelectorAll("input[type=checkbox]");
+  checkBoxes.forEach(checkBox => {
+    checkBox.addEventListener('change', function() {
+      squares.forEach(square => {
+        if (square.getAttribute('Type') == this.parentElement.innerText) {
+          if (!square.getAttribute('alreadyPlayed')) {
+            if (this.checked) {
+              square.removeAttribute("outOfGame");
+              square.style.backgroundColor = '';
+              square.innerHTML = '';
+            } else {
+              fillSquare(square.id, square.getAttribute('AtomicNumber'), true);
+              square.style.backgroundColor = 'LightSteelBlue';
+              square.setAttribute('outOfGame', true);
+            }
+          }
+        }
+      });
+      generateGame();
+    });
+  });
+}
+
+function generateTableLayout(){
+  for (var entry of data) {
+    var square = document.createElement('button');
+    size = 5.555
+    square.style.position = "absolute";
+    if (entry.Group != null) {
+      square.style.left = size * (entry.Group - 1) + '%';
+      square.style.top = size * (entry.Period - 1) + 'vw';
+    } else {
+      if (entry.Period == 6) {
+        square.style.left = 3 * size + (entry.AtomicNumber - 57) * size + '%';
+        square.style.top = 7 * size + size / 3 + 'vw';
+      }
+      if (entry.Period == 7) {
+        square.style.left = 3 * size + (entry.AtomicNumber - 89) * size + '%';
+        square.style.top = 8 * size + size / 3 + 'vw';
+      }
+    }
+    square.setAttribute('AtomicNumber', entry.AtomicNumber);
+    square.setAttribute('Type', entry.Type);
+    square.id = entry.Element;
+    document.getElementById('table').appendChild(square);
   }
 }
 
 var data;
 var options = [];
 var numberOfOptions;
-var numberOfOptionsRange;
+var optionsRange;
 
 function main() {
   fetchJSONFile('periodic.json', function(dataArgument) {
     data = dataArgument;
-    var elementTypes = data.map(a => a.Type);
-    uniqueElementTypes = elementTypes.filter(unique);
-    for (i = 0; i < uniqueElementTypes.length; i++) {
-      var label = document.createElement("label");
-      var elementTypeSpan = document.createElement("div");
-      var elementTypeText = document.createTextNode(uniqueElementTypes[i]);
-      elementTypeSpan.appendChild(elementTypeText);
-      var elementTypeCheckBox = document.createElement("input");
-      elementTypeCheckBox.setAttribute("type", "checkbox");
-      elementTypeCheckBox.checked = true;
-      label.appendChild(elementTypeCheckBox);
-      label.appendChild(elementTypeSpan);
-      document.getElementById("checkBoxes").appendChild(label);
-    }
-    numberOfOptionsRange = document.querySelector("input[type=range]");
-    numberOfOptionsBubble = document.querySelector(".bubble");
-    setBubble(numberOfOptionsRange, numberOfOptionsBubble);
-    numberOfOptionsRange.addEventListener("input", () => {
-      setBubble(numberOfOptionsRange, numberOfOptionsBubble);
-    });
-    numberOfOptionsRange.addEventListener('change', function() {
-      generateGame();
-      numberOfOptionsRange.blur();
-    });
-    var checkBoxes = document.querySelectorAll("input[type=checkbox]");
-    checkBoxes.forEach(checkBox => {
-      checkBox.addEventListener('change', function() {
-        squares.forEach(square => {
-          if (square.getAttribute('Type') == this.parentElement.innerText) {
-            if (!square.getAttribute('alreadyPlayed')) {
-              if (this.checked) {
-                square.removeAttribute("outOfGame");
-                square.style.backgroundColor = '';
-                square.innerHTML = '';
-              } else {
-                fillSquare(square.id, square.getAttribute('AtomicNumber'), true);
-                square.style.backgroundColor = 'LightSteelBlue';
-                square.setAttribute('outOfGame', true);
-              }
-            }
-          }
-        });
-        generateGame();
-      });
-    });
-    for (var entry of data) {
-      var square = document.createElement('button');
-      size = 5.555
-      square.style.position = "absolute";
-      if (entry.Group != null) {
-        square.style.left = size * (entry.Group - 1) + 'vw';
-        square.style.top = size * (entry.Period - 1) + 'vw';
-      } else {
-        if (entry.Period == 6) {
-          square.style.left = 3 * size + (entry.AtomicNumber - 57) * size + 'vw';
-          square.style.top = 7 * size + size / 3 + 'vw';
-        }
-        if (entry.Period == 7) {
-          square.style.left = 3 * size + (entry.AtomicNumber - 89) * size + 'vw';
-          square.style.top = 8 * size + size / 3 + 'vw';
-        }
-      }
-      square.setAttribute('AtomicNumber', entry.AtomicNumber);
-      square.setAttribute('Type', entry.Type);
-      square.id = entry.Element;
-      document.getElementById('table').appendChild(square);
-    }
+    generateCheckboxes();
+    handleOptionsRange();
+    handleCheckboxChange();
+    generateTableLayout();
     squares = document.querySelectorAll("button");
     correctScore = incorrectScore = 0;
     generateGame();
