@@ -43,14 +43,15 @@ button {
   background-color: FloralWhite;
 }
 
-button>* {
-  pointer-events: none;
-  font-family: "Ubuntu"
+button:hover {
+  filter: brightness(95%);
 }
 
-button * {
+button>* {
   position: absolute;
   transform: translate(-50%, -50%);
+  pointer-events: none;
+  font-family: "Ubuntu"
 }
 
 button .AtomicNumber {
@@ -140,8 +141,9 @@ button .AtomicMass {
   padding: 0.35vw 0.75vw;
   position: absolute;
   border-radius: 0.5vw;
-  transform: translate(-50%,+100%);
+  transform: translate(-50%, +100%);
 }
+
 .bubble::after {
   content: "";
   position: absolute;
